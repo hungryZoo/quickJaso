@@ -153,7 +153,7 @@ cask "quickjaso" do
   desc "Finder service that inspects and converts file names to Unicode NFC for Windows compatibility"
   homepage "https://github.com/hungryZoo/quickJaso"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "quickJaso.app"
 
