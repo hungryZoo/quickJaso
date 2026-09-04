@@ -19,9 +19,13 @@ Finder에서 파일을 선택한 뒤 우클릭 → **서비스** 메뉴에서 `W
 
 ### 방법 2 — Homebrew
 ```bash
-brew install --cask --no-quarantine hungryZoo/tap/quickjaso
+brew install --cask hungryZoo/tap/quickjaso
 ```
-`--no-quarantine`을 붙이면 다운로드 격리 속성이 붙지 않아 Gatekeeper 경고 없이 바로 실행됩니다. 붙이지 않으면 방법 1과 같은 첫 실행 절차가 필요합니다.
+Homebrew 6부터는 격리 속성을 건너뛰는 `--no-quarantine` 옵션이 없어졌기 때문에, 설치 후 아래 "처음 실행할 때" 절차가 한 번 필요합니다. 한 줄로 끝내려면:
+
+```bash
+brew install --cask hungryZoo/tap/quickjaso && xattr -dr com.apple.quarantine /Applications/quickJaso.app
+```
 
 ### 처음 실행할 때 (Gatekeeper)
 이 앱은 Apple Developer ID로 서명·공증(notarization)되지 않았습니다. 브라우저로 내려받은 DMG에서 설치하면 macOS가 첫 실행을 막을 수 있습니다.
@@ -34,7 +38,7 @@ brew install --cask --no-quarantine hungryZoo/tap/quickjaso
 xattr -dr com.apple.quarantine /Applications/quickJaso.app
 ```
 
-이 절차가 필요한 이유와 없앨 수 있는 방법은 [16. 알려진 제한사항](#16-알려진-제한사항)을 참고하세요.
+격리 속성을 제거하면 이후에는 경고 없이 실행됩니다. 이 절차가 필요한 이유와 없앨 수 있는 방법(Developer ID 서명 + 공증)은 [16. 알려진 제한사항](#16-알려진-제한사항)을 참고하세요.
 
 ---
 

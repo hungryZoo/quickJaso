@@ -158,9 +158,10 @@ cask "quickjaso" do
   app "quickJaso.app"
 
   caveats <<~EOS
-    quickJaso is ad-hoc signed (not notarized). If macOS blocks the first launch,
-    open System Settings > Privacy & Security and click "Open Anyway",
-    or install with: brew install --cask --no-quarantine hungryZoo/tap/quickjaso
+    quickJaso is ad-hoc signed and not notarized, so macOS Gatekeeper will
+    block the first launch. After installing, either run:
+      xattr -dr com.apple.quarantine "#{appdir}/quickJaso.app"
+    or open System Settings > Privacy & Security and click "Open Anyway".
   EOS
 
   zap trash: [
