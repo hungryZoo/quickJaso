@@ -101,15 +101,19 @@ final class ResultPanelController {
     private func startAutoCloseTimer() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+            guard let strongSelf = self else {
+                timer.invalidate()
+                return
+            }
             Task { @MainActor in
-                guard let self, let remaining = self.presentation?.remainingSeconds else {
+                guard let remaining = strongSelf.presentation?.remainingSeconds else {
                     timer.invalidate()
                     return
                 }
                 if remaining <= 1 {
-                    self.close()
+                    strongSelf.close()
                 } else {
-                    self.presentation?.updateRemaining(remaining - 1)
+                    strongSelf.presentation?.updateRemaining(remaining - 1)
                 }
             }
         }
