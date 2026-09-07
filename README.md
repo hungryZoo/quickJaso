@@ -12,35 +12,60 @@ Finder에서 파일을 선택한 뒤 우클릭 → **서비스** 메뉴에서 `W
 
 ## 설치
 
-### 방법 1 — DMG 다운로드
-1. [Releases](https://github.com/hungryZoo/quickJaso/releases/latest)에서 `quickJaso-<버전>.dmg`를 내려받습니다.
-2. DMG를 열고 `quickJaso.app`을 `Applications` 폴더 아이콘으로 드래그합니다.
-3. 앱을 한 번 실행합니다. (첫 실행 시 아래 "처음 실행할 때" 참고)
+**Apple Silicon/Intel · macOS 13 이상 · Homebrew 6 기준**입니다. 앱은 `/Applications/quickJaso.app`에 설치됩니다.
 
-### 방법 2 — Homebrew
-```bash
+### 방법 1 — Homebrew (권장)
+
+```sh
+brew tap hungryZoo/tap
+brew trust --cask hungryZoo/tap/quickjaso
 brew install --cask hungryZoo/tap/quickjaso
-```
-Homebrew 6부터는 격리 속성을 건너뛰는 `--no-quarantine` 옵션이 없어졌기 때문에, 설치 후 아래 "처음 실행할 때" 절차가 한 번 필요합니다. 한 줄로 끝내려면:
-
-```bash
-brew install --cask hungryZoo/tap/quickjaso && xattr -dr com.apple.quarantine /Applications/quickJaso.app
+open -a quickJaso
 ```
 
-### 처음 실행할 때 (Gatekeeper)
-이 앱은 Apple Developer ID로 서명·공증(notarization)되지 않았습니다. 브라우저로 내려받은 DMG에서 설치하면 macOS가 첫 실행을 막을 수 있습니다.
+`brew trust`는 이 cask만 신뢰하도록 지정합니다. [Homebrew 설치](https://brew.sh/) · [공개 릴리스](https://github.com/hungryZoo/quickJaso/releases) · [Homebrew cask](https://github.com/hungryZoo/homebrew-tap/blob/main/Casks/quickjaso.rb)
 
-- **macOS 15 이상**: 앱을 한 번 실행해 경고를 닫은 뒤 **시스템 설정 → 개인정보 보호 및 보안** 맨 아래의 **그래도 열기**를 누릅니다.
-- **macOS 13~14**: Finder에서 앱을 **우클릭 → 열기**를 선택합니다.
-- 또는 터미널에서 격리 속성을 제거합니다.
+현재 배포본은 ad-hoc 서명이며 Apple 공증은 없습니다. 첫 실행이 차단되면 출처를 확인한 뒤 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기**에서 직접 승인하세요. Homebrew 6에는 격리 속성을 건너뛰는 옵션이 없으므로 설치 과정에서 Gatekeeper나 quarantine을 해제하지 않습니다. 터미널로 바로 풀려면:
 
-```bash
+```sh
 xattr -dr com.apple.quarantine /Applications/quickJaso.app
 ```
 
-격리 속성을 제거하면 이후에는 경고 없이 실행됩니다. 이 절차가 필요한 이유와 없앨 수 있는 방법(Developer ID 서명 + 공증)은 [16. 알려진 제한사항](#16-알려진-제한사항)을 참고하세요.
+### 업데이트
 
----
+새 버전이 릴리스되면 quickJaso를 종료한 뒤 실행합니다.
+
+```sh
+brew update
+brew upgrade --cask quickjaso
+open -a quickJaso
+```
+
+Finder 서비스 메뉴에 변경이 반영되지 않으면 한 번 로그아웃했다가 로그인하세요.
+
+### 제거
+
+```sh
+brew uninstall --cask quickjaso
+```
+
+설정(`~/Library/Preferences/com.heonzoo.quickJaso.plist`)까지 지우려면 `brew uninstall --zap --cask quickjaso`를 사용합니다.
+
+### 방법 2 — DMG 직접 설치
+
+1. [Releases](https://github.com/hungryZoo/quickJaso/releases/latest)에서 `quickJaso-<버전>.dmg`를 내려받습니다.
+2. DMG를 열고 `quickJaso.app`을 `Applications` 폴더 아이콘으로 드래그합니다.
+3. 브라우저로 내려받은 파일에는 격리 속성이 붙어 있어 첫 실행이 차단됩니다. 다음 중 하나를 수행합니다.
+   - 터미널에서 격리 속성 제거:
+
+     ```sh
+     xattr -dr com.apple.quarantine /Applications/quickJaso.app
+     ```
+
+   - 또는 앱을 한 번 실행해 경고를 닫은 뒤 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기** (macOS 13~14는 Finder에서 앱 **우클릭 → 열기**)
+4. 앱을 실행하면 Finder 서비스가 등록되고, 첫 실행 시 전체 디스크 접근 권한 안내 창이 나타납니다.
+
+이 절차가 필요한 이유와 없앨 수 있는 방법(Developer ID 서명 + 공증)은 [16. 알려진 제한사항](#16-알려진-제한사항)을 참고하세요.
 
 ## 목차
 
