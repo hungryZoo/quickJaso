@@ -20,10 +20,11 @@ Finder에서 파일을 선택한 뒤 우클릭 → **서비스** 메뉴에서 `W
 brew tap hungryZoo/tap
 brew trust --cask hungryZoo/tap/quickjaso
 brew install --cask hungryZoo/tap/quickjaso
+xattr -dr com.apple.quarantine "/Applications/quickJaso.app"
 open -a quickJaso
 ```
 
-`brew trust`는 이 cask만 신뢰하도록 지정합니다. [Homebrew 설치](https://brew.sh/) · [공개 릴리스](https://github.com/hungryZoo/quickJaso/releases) · [Homebrew cask](https://github.com/hungryZoo/homebrew-tap/blob/main/Casks/quickjaso.rb)
+`brew trust`는 이 cask만 신뢰하도록 지정하고, `xattr` 줄은 다운로드 격리 속성을 지워 첫 실행 차단을 없앱니다. [Homebrew 설치](https://brew.sh/) · [공개 릴리스](https://github.com/hungryZoo/quickJaso/releases) · [Homebrew cask](https://github.com/hungryZoo/homebrew-tap/blob/main/Casks/quickjaso.rb)
 
 현재 배포본은 ad-hoc 서명이며 Apple 공증은 없습니다. 첫 실행이 차단되면 출처를 확인한 뒤 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기**에서 직접 승인하세요. Homebrew 6에는 격리 속성을 건너뛰는 옵션이 없으므로 설치 과정에서 Gatekeeper나 quarantine을 해제하지 않습니다. 터미널로 바로 풀려면:
 
@@ -38,6 +39,7 @@ xattr -dr com.apple.quarantine /Applications/quickJaso.app
 ```sh
 brew update
 brew upgrade --cask quickjaso
+xattr -dr com.apple.quarantine "/Applications/quickJaso.app"
 open -a quickJaso
 ```
 
@@ -47,9 +49,21 @@ Finder 서비스 메뉴에 변경이 반영되지 않으면 한 번 로그아웃
 
 ```sh
 brew uninstall --cask quickjaso
+/System/Library/CoreServices/pbs -flush
 ```
 
 설정(`~/Library/Preferences/com.heonzoo.quickJaso.plist`)까지 지우려면 `brew uninstall --zap --cask quickjaso`를 사용합니다.
+
+제거 후에도 Finder 우클릭 메뉴에 `Windows 호환 검사` 서비스가 남아 있다면, macOS Launch Services가 **다른 위치의 quickJaso.app 사본**(휴지통, 다운로드 폴더, 열어 둔 DMG, 소스 빌드 폴더 등)을 아직 기억하고 있는 것입니다. 휴지통을 비우고 DMG를 추출한 뒤 다음을 실행하면 정리됩니다.
+
+```sh
+LSR=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+$LSR -dump | grep -E '^\s*path:\s+.*quickJaso\.app'   # 남아 있는 사본 확인
+$LSR -u "/path/to/남은/quickJaso.app"                      # 각 사본 등록 해제
+/System/Library/CoreServices/pbs -flush
+```
+
+소스에서 빌드한 경우에는 저장소의 `scripts/unregister-services.sh`가 같은 작업을 자동으로 수행합니다. 그래도 남으면 로그아웃했다가 다시 로그인하세요.
 
 ### 방법 2 — DMG 직접 설치
 

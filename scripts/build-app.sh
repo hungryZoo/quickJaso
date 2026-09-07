@@ -39,10 +39,8 @@ else
     codesign --force --sign - --deep "$app_path"
 fi
 
-lsregister_path="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
-if ! "$lsregister_path" -f "$app_path"; then
-    print -u2 "Launch Services 등록에 실패했습니다. 앱을 한 번 직접 열어 등록할 수 있습니다."
-fi
+print "빌드 폴더의 Finder 서비스를 테스트하려면 실행하세요: open $app_path (실행 시 서비스가 등록됩니다.)"
+print "나중에 서비스 등록을 해제하려면 실행하세요: scripts/unregister-services.sh"
 
 print "완료: $app_path"
 print "실행: open $app_path"

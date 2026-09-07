@@ -138,6 +138,11 @@ else
     rm -f "$hybrid_dmg"
 fi
 
+lsregister_path="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
+"$lsregister_path" -u "$staging_path/quickJaso.app" || true
+"$lsregister_path" -u /Volumes/quickJaso/quickJaso.app || true
+/System/Library/CoreServices/pbs -flush || true
+
 rm -rf "$staging_path"
 
 sha256="$(shasum -a 256 "$dmg_path" | awk '{print $1}')"
