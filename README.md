@@ -54,7 +54,7 @@ brew uninstall --cask quickjaso
 
 설정(`~/Library/Preferences/com.heonzoo.quickJaso.plist`)까지 지우려면 `brew uninstall --zap --cask quickjaso`를 사용합니다.
 
-제거 후에도 Finder 우클릭 메뉴에 `Windows 호환 검사` 서비스가 남아 있다면, macOS Launch Services가 **다른 위치의 quickJaso.app 사본**(휴지통, 다운로드 폴더, 열어 둔 DMG, 소스 빌드 폴더 등)을 아직 기억하고 있는 것입니다. 휴지통을 비우고 DMG를 추출한 뒤 다음을 실행하면 정리됩니다.
+제거 후에도 Finder 우클릭 메뉴에 `Windows 호환 검사` 서비스가 남아 있다면, 디스크 어딘가에 **다른 quickJaso.app 사본**(휴지통, 다운로드 폴더, 열어 둔 DMG, 소스 빌드 폴더의 `build/quickJaso.app` 등)이 있는 것입니다. macOS는 디스크에 있는 앱을 자동으로 다시 등록하므로 등록만 해제해서는 소용없고 **사본 자체를 지워야** 합니다. 휴지통을 비우고, DMG를 추출하고, 소스에서 빌드했다면 `rm -rf build`로 빌드 사본을 지운 뒤 다음을 실행하세요.
 
 ```sh
 LSR=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
@@ -63,7 +63,7 @@ $LSR -u "/path/to/남은/quickJaso.app"                      # 각 사본 등록
 /System/Library/CoreServices/pbs -flush
 ```
 
-소스에서 빌드한 경우에는 저장소의 `scripts/unregister-services.sh`가 같은 작업을 자동으로 수행합니다. 그래도 남으면 로그아웃했다가 다시 로그인하세요.
+저장소의 `scripts/unregister-services.sh`가 등록 해제 작업을 자동으로 수행합니다(`--dry-run`으로 미리 확인 가능). 그래도 남으면 로그아웃했다가 다시 로그인하세요.
 
 ### 방법 2 — DMG 직접 설치
 
