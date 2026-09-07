@@ -43,7 +43,7 @@ xattr -dr com.apple.quarantine "/Applications/quickJaso.app"
 open -a quickJaso
 ```
 
-Finder 서비스 메뉴에 변경이 반영되지 않으면 한 번 로그아웃했다가 로그인하세요.
+설치·업데이트 직후 Finder 우클릭 메뉴에 서비스가 보이지 않으면 `/System/Library/CoreServices/pbs -update`를 실행하거나 한 번 로그아웃했다가 로그인하세요.
 
 ### 제거
 
