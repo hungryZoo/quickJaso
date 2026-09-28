@@ -12,21 +12,19 @@ Finder에서 파일을 선택한 뒤 우클릭 → **서비스** 메뉴에서 `W
 
 ## 설치
 
-**Apple Silicon/Intel · macOS 13 이상 · Homebrew 6 기준**입니다. 앱은 `/Applications/quickJaso.app`에 설치됩니다.
+**Apple Silicon/Intel · macOS 13 이상 · Homebrew 7 기준**입니다. 앱은 `/Applications/quickJaso.app`에 설치됩니다.
 
 ### 방법 1 — Homebrew (권장)
 
 ```sh
-brew tap hungryZoo/tap
-brew trust --cask hungryZoo/tap/quickjaso
-brew install --cask hungryZoo/tap/quickjaso
+brew install hungryZoo/tap/quickjaso
 xattr -dr com.apple.quarantine "/Applications/quickJaso.app"
 open -a quickJaso
 ```
 
-`brew trust`는 이 cask만 신뢰하도록 지정하고, `xattr` 줄은 다운로드 격리 속성을 지워 첫 실행 차단을 없앱니다. [Homebrew 설치](https://brew.sh/) · [공개 릴리스](https://github.com/hungryZoo/quickJaso/releases) · [Homebrew cask](https://github.com/hungryZoo/homebrew-tap/blob/main/Casks/quickjaso.rb)
+`hungryZoo/tap/quickjaso`처럼 전체 이름으로 설치하면 tap 추가와 cask 선택은 Homebrew가 알아서 합니다. `xattr` 줄은 다운로드 격리 속성을 지워 첫 실행 차단을 없앱니다. [Homebrew 설치](https://brew.sh/) · [공개 릴리스](https://github.com/hungryZoo/quickJaso/releases) · [Homebrew cask](https://github.com/hungryZoo/homebrew-tap/blob/main/Casks/quickjaso.rb)
 
-현재 배포본은 ad-hoc 서명이며 Apple 공증은 없습니다. 첫 실행이 차단되면 출처를 확인한 뒤 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기**에서 직접 승인하세요. Homebrew 6에는 격리 속성을 건너뛰는 옵션이 없으므로 설치 과정에서 Gatekeeper나 quarantine을 해제하지 않습니다. 터미널로 바로 풀려면:
+현재 배포본은 ad-hoc 서명이며 Apple 공증은 없습니다. 첫 실행이 차단되면 출처를 확인한 뒤 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기**에서 직접 승인하세요. Homebrew에는 격리 속성을 건너뛰는 옵션이 없으므로 설치 과정에서 Gatekeeper나 quarantine을 해제하지 않습니다. 터미널로 바로 풀려면:
 
 ```sh
 xattr -dr com.apple.quarantine /Applications/quickJaso.app
@@ -38,10 +36,12 @@ xattr -dr com.apple.quarantine /Applications/quickJaso.app
 
 ```sh
 brew update
-brew upgrade --cask quickjaso
+brew upgrade hungryZoo/tap/quickjaso
 xattr -dr com.apple.quarantine "/Applications/quickJaso.app"
 open -a quickJaso
 ```
+
+업데이트는 전체 이름(`hungryZoo/tap/quickjaso`)으로 실행하세요. Homebrew 7은 신뢰하지 않은 서드파티 tap을 이름 없는 `brew upgrade`에서 건너뜁니다. 이름 없이 한꺼번에 업데이트하고 싶다면 한 번만 `brew trust --cask hungryZoo/tap/quickjaso`를 실행해 두면 됩니다.
 
 설치·업데이트 직후 Finder 우클릭 메뉴에 서비스가 보이지 않으면 `/System/Library/CoreServices/pbs -update`를 실행하거나 한 번 로그아웃했다가 로그인하세요.
 
