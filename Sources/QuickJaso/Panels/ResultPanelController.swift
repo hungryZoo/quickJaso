@@ -38,7 +38,7 @@ final class ResultPanelController {
                 && report.summary.skipped == 0
                 && report.summary.renamed < 10
         )
-        let presentation = ResultPanelPresentation(remainingSeconds: shouldAutoClose ? 4 : nil)
+        let presentation = ResultPanelPresentation(remainingSeconds: shouldAutoClose ? 2 : nil)
         presentation.onCancelAutoClose = { [weak self] in self?.cancelAutoClose() }
         self.presentation = presentation
 

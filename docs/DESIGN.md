@@ -120,7 +120,7 @@ convert(urls):
   - 결과 패널은 앱을 활성화하지 않으므로 상세 창을 열 때 `NSApp.activate`.
 
 ## 5. 결과 패널 규칙
-- 자동 닫힘(4초): 검사 패널은 항상(마우스 hover 시 취소). 변환 패널은 충돌, 오류, 확인불가 0 이고 변환 항목 < 10 일 때만.
+- 자동 닫힘(2초): 검사 패널은 항상(마우스 hover 시 취소). 변환 패널은 충돌, 오류, 확인불가 0 이고 변환 항목 < 10 일 때만.
 - 패널은 화면 우상단, 비활성 `NSPanel`(`.nonactivatingPanel`, `level = .floating`, `hidesOnDeactivate = false`).
 - 알림 없음. 최초 실행(사용자 실행과 서비스 실행 모두)에 `FullDiskAccessChecker`가 허용됨이 아니면 `권한 설정 안내` 창(floating, 비모달)을 띄우고 `x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles`로 시스템 설정을 연다. 앱은 권한을 직접 변경하지 않는다.
 
