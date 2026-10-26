@@ -20,6 +20,8 @@ open -a "quickJaso"
 [![macOS 13+](https://img.shields.io/badge/macOS-13%2B-000000?logo=apple&logoColor=white)](#6-플랫폼-지원과-제한사항)
 [![Apple Silicon](https://img.shields.io/badge/arch-Apple%20Silicon%20(arm64)-000000)](#6-플랫폼-지원과-제한사항)
 
+<img width="780" alt="Finder에서 파일 3개를 선택하고 우클릭 → 서비스 메뉴를 연 화면. 하위 메뉴에 Windows 호환 검사와 Windows 호환 파일명으로 변환 항목이 표시됨" src="docs/main_screen.png">
+
 </div>
 
 ---
@@ -28,6 +30,12 @@ Finder에서 파일이나 폴더를 선택하고 우클릭 → **서비스** →
 `Windows 호환 파일명으로 변환`을 고르면 NFC가 아닌 이름만 골라 NFC로 바꾸고, 바뀐 항목 수와 건너뛴 항목 수를 같은 패널에 표시합니다.
 파일 **내용**은 바꾸지 않고 파일과 폴더의 **이름**만 바꿉니다.
 이름 충돌, 권한 오류, 클라우드 미다운로드 항목은 변경하지 않고 건너뜁니다(fail-safe).
+
+<div align="center">
+
+https://github.com/user-attachments/assets/9a5e5b64-c94f-42ec-b0c9-a6d2145efc14
+
+</div>
 
 ---
 
@@ -449,7 +457,7 @@ quickJaso/
 │   ├── unregister-services.sh  # 남은 quickJaso.app 사본의 서비스 등록 해제
 │   ├── make-icon.sh         # AppIcon.icns 생성
 │   └── make-icon.swift      # make-icon.sh가 쓰는 아이콘 그리기 스크립트
-├── docs/                    # SPEC.md(요구사항), DESIGN.md(설계)
+├── docs/                    # SPEC.md(요구사항), DESIGN.md(설계), main_screen.png(README 스크린샷)
 └── README.md
 ```
 
