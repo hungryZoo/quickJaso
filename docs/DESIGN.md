@@ -112,6 +112,12 @@ convert(urls):
 - 실행 사유 판별: `applicationWillFinishLaunching`에서 `currentAppleEvent`가 `kAEOpenApplication`이고 `keyAELaunchedAsServiceItem`/로그인 항목 파라미터가 없을 때만 “사용자 실행”. 서비스, URL, 문서 열기로 실행되면 메인 창을 숨기고 결과 패널만 표시. 보조로 1초 내 Quick Action 요청이 없을 때만 메인 창 표시.
 - URL 스킴은 `application(_:open:)`으로만 수신 (kAEGetURL 핸들러 병행 시 이중 처리됨). 동일 요청은 1초 내 중복 제거.
 - 확인 창(NSAlert)은 `NSApp.activate` 후 `runModal`.
+- Dock 표시와 자동 종료 (메뉴바 아이콘 없음): `Info.plist`의 `LSUIElement = true`로 Dock 없이 시작(`.accessory`). 실행 후 `setActivationPolicy`로 숨기면 Dock 아이콘이 잠깐 보이므로 plist에서 지정.
+  - 판정 규칙은 `QuickJasoCore`의 `AppPresencePolicy`(단위 테스트 대상), 적용은 앱 타깃의 `AppLifecycleController`.
+  - Dock 표시: 사용자 실행 세션(`launchedForQuickAction == false`, 실행 대기 종료)이고 일반 창(`NSPanel` 제외, 최소화 포함)이 1개 이상일 때만 `.regular`. 그 외 `.accessory`. `.regular` 전환 직후 `NSApp.activate`로 앱 메뉴 표시.
+  - 종료: 검사 또는 변환 진행 중(`isBusy`)이 아니고, 모달 창이 없고, 실행 대기(1초 폴백)가 끝났고, 앱이 가려진 상태(`isHidden`)가 아니며, 열린 창과 패널이 0개면 `NSApp.terminate`.
+  - 판정 시점: `NSWindow.willCloseNotification`, 결과 패널 닫힘, 검사와 변환 종료, 상세 창 표시, 서비스 요청 수신 후 0.5초 지연 판정(닫히는 창이 아직 보이는 상태로 집계되는 것 방지, 연속 호출은 마지막 1회만). 서비스 실행인데 1초 폴백까지 요청이 없으면 2초 뒤 판정.
+  - 결과 패널은 앱을 활성화하지 않으므로 상세 창을 열 때 `NSApp.activate`.
 
 ## 5. 결과 패널 규칙
 - 자동 닫힘(4초): 검사 패널은 항상(마우스 hover 시 취소). 변환 패널은 충돌, 오류, 확인불가 0 이고 변환 항목 < 10 일 때만.

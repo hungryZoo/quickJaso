@@ -26,7 +26,7 @@ final class AppState: ObservableObject {
     private var openMainWindow: (() -> Void)?
     private var openDetailWindow: (() -> Void)?
     private var pendingConfirmation = false
-    private var isLaunchFallbackPending = true
+    private(set) var isLaunchFallbackPending = true
     private var checkedFullDiskAccessOnboardingThisSession = false
 
     private init() {
@@ -48,6 +48,7 @@ final class AppState: ObservableObject {
     func markLaunchAsQuickAction() {
         launchedForQuickAction = true
         hideMainWindow()
+        AppLifecycleController.shared.scheduleEvaluation()
     }
 
     func markQuickActionRequestReceived() {
@@ -76,6 +77,8 @@ final class AppState: ObservableObject {
         isLaunchFallbackPending = false
         guard !launchedForQuickAction else {
             hideMainWindow()
+            // 서비스 요청은 보통 실행 직후 도착한다. 요청 없이 아무것도 열리지 않으면 종료한다.
+            AppLifecycleController.shared.scheduleEvaluation(after: 2)
             return
         }
         showMainWindow()
@@ -84,6 +87,7 @@ final class AppState: ObservableObject {
     func showMainWindow() {
         launchedForQuickAction = false
         isLaunchFallbackPending = false
+        AppLifecycleController.shared.showDockIconForUserWindow()
 
         if let window = mainWindow ?? findMainWindow() {
             mainWindow = window
@@ -104,7 +108,10 @@ final class AppState: ObservableObject {
     func inspect(urls: [URL]) async {
         guard !urls.isEmpty, !isBusy else { return }
         isBusy = true
-        defer { isBusy = false }
+        defer {
+            isBusy = false
+            AppLifecycleController.shared.scheduleEvaluation()
+        }
 
         let report = await inspectionViewModel.inspect(urls: urls, options: settings.scanOptions)
         accept(report)
@@ -117,6 +124,7 @@ final class AppState: ObservableObject {
         defer {
             pendingConfirmation = false
             isBusy = false
+            AppLifecycleController.shared.scheduleEvaluation()
         }
 
         guard let report = await conversionViewModel.convert(
@@ -145,7 +153,10 @@ final class AppState: ObservableObject {
             guard let self, let window = self.findDetailWindow() else { return }
             self.detailWindow = window
             window.isRestorable = false
+            // 결과 패널은 앱을 활성화하지 않으므로 상세 창이 다른 앱 뒤에 열리지 않게 활성화한다.
+            NSApp.activate(ignoringOtherApps: true)
             window.makeKeyAndOrderFront(nil)
+            AppLifecycleController.shared.scheduleEvaluation()
         }
     }
 

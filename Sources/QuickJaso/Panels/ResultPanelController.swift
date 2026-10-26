@@ -96,6 +96,7 @@ final class ResultPanelController {
         panel?.orderOut(nil)
         panel = nil
         presentation = nil
+        AppLifecycleController.shared.scheduleEvaluation()
     }
 
     private func startAutoCloseTimer() {

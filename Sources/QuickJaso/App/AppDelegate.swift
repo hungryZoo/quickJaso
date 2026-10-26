@@ -18,6 +18,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             orderOutRestoredWindows()
         }
 
+        AppLifecycleController.shared.start()
+
         let receiver = QuickActionReceiver(router: router)
         servicesProvider = receiver
         NSApp.servicesProvider = receiver
