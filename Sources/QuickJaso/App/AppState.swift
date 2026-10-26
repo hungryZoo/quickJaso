@@ -82,6 +82,7 @@ final class AppState: ObservableObject {
             return
         }
         showMainWindow()
+        UpdateController.shared.presentPendingUpdateIfNeeded()
     }
 
     func showMainWindow() {

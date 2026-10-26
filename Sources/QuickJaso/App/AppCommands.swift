@@ -34,6 +34,9 @@ struct AppCommands: Commands {
             Button("전체 디스크 접근 권한 설정…") {
                 appState.showFullDiskAccessOnboarding()
             }
+            Button("업데이트 확인…") {
+                UpdateController.shared.checkNow()
+            }
         }
     }
 

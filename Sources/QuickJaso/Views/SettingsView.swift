@@ -35,9 +35,34 @@ private struct SettingsContent: View {
                 Spacer()
                 Button("전체 디스크 접근 권한 설정…", action: onShowFullDiskAccessOnboarding)
             }
+
+            Divider()
+
+            UpdateSettingsRow(settings: settings, updates: .shared)
         }
         .formStyle(.grouped)
         .padding(16)
         .frame(width: 500)
+    }
+}
+
+private struct UpdateSettingsRow: View {
+    @ObservedObject var settings: AppSettings
+    @ObservedObject var updates: UpdateController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Toggle("업데이트 자동 확인 (하루 1회)", isOn: $settings.automaticallyCheckForUpdates)
+            HStack {
+                Text("현재 버전 \(updates.currentVersion?.description ?? "알 수 없음")")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button(updates.isChecking ? "확인 중…" : "지금 확인") {
+                    updates.checkNow()
+                }
+                .disabled(updates.isChecking)
+            }
+        }
     }
 }

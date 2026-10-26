@@ -130,6 +130,27 @@ convert(urls):
 - `recurseIntoPackages: Bool = false`
 - `includeHiddenFiles: Bool = true`
 - `hasDismissedFullDiskAccessOnboarding: Bool = false`
+- `automaticallyCheckForUpdates: Bool = true`
+- `skippedUpdateVersion: String? = nil`
+
+## 6.1 업데이트 확인 (agents-dev-skills `self-update-check` 기반)
+- 유지한 원칙: 시작 지연 없음, 하루 1회 확인, 요청 전에 시도 시각 기록, 캐시 기반 표시, 패키지 관리자 소유 앱은 해당 관리자 명령으로만 갱신.
+- 스킬과 다른 점 (사용자 결정, 2026-10-26)
+  - 상태줄 알림 대신 업데이트 창(새 버전, 패치 노트, `이 버전 건너뛰기`, `다음에`, `예`). GUI 앱이고 상태줄이 없으며, 실행이 작업 단위라 하루 수십 번 묻는 문제가 작음.
+  - 최신 버전 조회는 웹 리다이렉트 대신 GitHub REST API `releases/latest`. 패치 노트(`body`)가 필요하기 때문이며, 하루 1회라 비인증 한도(시간당 60회)와 무관.
+  - 비활성화는 환경변수 대신 설정 토글(GUI 앱은 셸 환경변수를 받지 않음). CLI 플래그 대신 `Help → 업데이트 확인…`과 설정의 `지금 확인`.
+- 구성: `QuickJasoCore`의 `SemanticVersion`, `UpdateCache`/`UpdateCacheStore`, `UpdatePolicy`, `LatestReleaseParser`, `UpdateChecker`, `ReleaseNotesFormatter`, `InstallMethod`, `UpdateScript`(단위 테스트 대상). 앱 타깃의 `UpdateController`, `UpdateView`.
+- 흐름
+  - (1) `applicationDidFinishLaunching`: `shouldCheck`(최초, 24시간 경과, 시계 역행)이면 `checkedAt` 저장 후 비동기 조회(시간 제한 5초). 성공 시에만 `latestVersion`, `releaseNotes`, `releaseURL` 갱신.
+  - (2) 조회 중에는 `AppLifecycleController`가 종료를 미룬다(`isBusy`에 포함).
+  - (3) 표시 시점: 사용자 실행은 메인 창 표시 직후, 서비스 실행은 종료 판정 직전(결과 패널과 창이 모두 닫힌 뒤). 실행당 1회.
+  - (4) 표시 조건: `latestVersion > 현재` 그리고 `latestVersion > skippedUpdateVersion`.
+- 버튼: `다음에`는 창만 닫음(다음 실행에 재표시), `이 버전 건너뛰기`는 `skippedUpdateVersion` 저장, `예`는 설치 방식별 처리.
+- 설치 방식: 앱이 `/Applications` 또는 `~/Applications`에 있고 `<prefix>/Caskroom/quickjaso`와 `<prefix>/bin/brew`가 있으면 Homebrew(`/opt/homebrew` 우선, `/usr/local`). 그 외는 릴리스 페이지 열기.
+- Homebrew 갱신: 임시 `.command` 스크립트를 Terminal로 열고 앱 종료. 스크립트는 앱 PID 종료를 기다린 뒤 `brew update`, `brew upgrade hungryZoo/tap/quickjaso`, `xattr -dr com.apple.quarantine`, `open`, 자기 삭제. 앱 안에서 brew를 실행하지 않는 이유: 출력과 오류를 사용자가 볼 수 없고, 실행 중인 앱 번들을 교체하게 됨.
+- 패치 노트 표시: `ReleaseNotesFormatter`로 제목은 굵게, 목록은 `•`, 코드 울타리 제거 후 `AttributedString(markdown:, .inlineOnlyPreservingWhitespace)`.
+- 한계: 1.0.0은 확인 기능이 없어 수동 업데이트 1회 필요. 업데이트 기능이 들어간 첫 버전의 `예` 경로(Terminal 실행, 실제 cask 교체)는 그다음 릴리스가 나와야 실측 가능.
+- sandbox 빌드용 entitlements에 `com.apple.security.network.client` 추가.
 
 ## 7. TODO / 향후
 - Undo (OperationRecord 기반, 충돌과 외부 변경 없을 때만)

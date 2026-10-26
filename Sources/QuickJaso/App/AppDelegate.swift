@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         AppLifecycleController.shared.start()
+        UpdateController.shared.startBackgroundCheckIfNeeded()
 
         let receiver = QuickActionReceiver(router: router)
         servicesProvider = receiver

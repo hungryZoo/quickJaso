@@ -9,6 +9,8 @@ final class AppSettings: ObservableObject {
         static let recurseIntoPackages = "recurseIntoPackages"
         static let includeHiddenFiles = "includeHiddenFiles"
         static let hasDismissedFullDiskAccessOnboarding = "hasDismissedFullDiskAccessOnboarding"
+        static let automaticallyCheckForUpdates = "automaticallyCheckForUpdates"
+        static let skippedUpdateVersion = "skippedUpdateVersion"
     }
 
     private let defaults: UserDefaults
@@ -33,6 +35,12 @@ final class AppSettings: ObservableObject {
             )
         }
     }
+    @Published var automaticallyCheckForUpdates: Bool {
+        didSet { defaults.set(automaticallyCheckForUpdates, forKey: Key.automaticallyCheckForUpdates) }
+    }
+    @Published var skippedUpdateVersion: String? {
+        didSet { defaults.set(skippedUpdateVersion, forKey: Key.skippedUpdateVersion) }
+    }
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -41,7 +49,8 @@ final class AppSettings: ObservableObject {
             Key.renameSymlinkItself: false,
             Key.recurseIntoPackages: false,
             Key.includeHiddenFiles: true,
-            Key.hasDismissedFullDiskAccessOnboarding: false
+            Key.hasDismissedFullDiskAccessOnboarding: false,
+            Key.automaticallyCheckForUpdates: true
         ])
         skipConversionConfirmation = defaults.bool(forKey: Key.skipConversionConfirmation)
         renameSymlinkItself = defaults.bool(forKey: Key.renameSymlinkItself)
@@ -50,6 +59,8 @@ final class AppSettings: ObservableObject {
         hasDismissedFullDiskAccessOnboarding = defaults.bool(
             forKey: Key.hasDismissedFullDiskAccessOnboarding
         )
+        automaticallyCheckForUpdates = defaults.bool(forKey: Key.automaticallyCheckForUpdates)
+        skippedUpdateVersion = defaults.string(forKey: Key.skippedUpdateVersion)
     }
 
     var scanOptions: ScanOptions {

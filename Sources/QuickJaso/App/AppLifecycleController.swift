@@ -46,12 +46,14 @@ final class AppLifecycleController {
             isUserSession: !state.launchedForQuickAction && !state.isLaunchFallbackPending,
             openWindowCount: openWindows.filter { !($0 is NSPanel) }.count,
             openPanelCount: openWindows.filter { $0 is NSPanel }.count,
-            isBusy: state.isBusy || NSApp.modalWindow != nil,
+            isBusy: state.isBusy || NSApp.modalWindow != nil || UpdateController.shared.isChecking,
             isLaunchPending: state.isLaunchFallbackPending,
             isHidden: NSApp.isHidden
         )
 
         if AppPresencePolicy.shouldTerminate(input) {
+            // 서비스 실행은 결과 패널이 닫힌 뒤, 종료 직전에 새 버전을 알린다.
+            if UpdateController.shared.presentPendingUpdateIfNeeded() { return }
             NSApp.terminate(nil)
             return
         }
